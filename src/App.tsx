@@ -1,6 +1,7 @@
 import { framer, CanvasNode } from "framer-plugin";
 import { useState, useEffect } from "react";
 import "./App.css";
+import { useDynamicPluginHeight } from "./code/DynamicPluginHeight";
 
 framer.showUI({
 	position: "top right",
@@ -8,26 +9,10 @@ framer.showUI({
 	height: 95,
 });
 
-function useSelection() {
-	const [selection, setSelection] = useState<CanvasNode[]>([]);
-
-	useEffect(() => {
-		return framer.subscribeToSelection(setSelection);
-	}, []);
-
-	return selection;
-}
-
 export function App() {
-	const selection = useSelection();
-	const layer = selection.length === 1 ? "layer" : "layers";
+	const [count, setCount] = useState(2);
 
-	const handleAddSvg = async () => {
-		await framer.addSVG({
-			svg: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path fill="#999" d="M20 0v8h-8L4 0ZM4 8h8l8 8h-8v8l-8-8Z"/></svg>`,
-			name: "Logo.svg",
-		});
-	};
+	useDynamicPluginHeight({ maxHeight: 500 });
 
 	return (
 		<main>
@@ -36,11 +21,26 @@ export function App() {
 				<a href="https://framer.com/developers/plugins/introduction" target="_blank">
 					Docs
 				</a>{" "}
-				to start. You have {selection.length} {layer} selected.
+				to start.
 			</p>
-			<button className="framer-button-primary" onClick={handleAddSvg}>
-				Insert Logo
-			</button>
+			<div className="item-stack">
+				{Array.from({ length: count }).map((_, index) => (
+					<div key={index} className="item">
+						Item {index + 1}
+					</div>
+				))}
+			</div>
+			<div className="button-row">
+				<button className="" onClick={() => setCount(Math.max(count - 1, 0))}>
+					Remove
+				</button>
+				<button
+					className="framer-button-primary"
+					onClick={() => setCount(Math.min(count + 1, 100))}
+				>
+					Add
+				</button>
+			</div>
 		</main>
 	);
 }
