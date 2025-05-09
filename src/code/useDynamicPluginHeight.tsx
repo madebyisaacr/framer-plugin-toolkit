@@ -1,7 +1,11 @@
-import { framer } from "framer-plugin";
+import { framer, UIOptions } from "framer-plugin";
 import { useEffect } from "react";
 
-export function useDynamicPluginHeight({ maxHeight }: { maxHeight?: number } = {}) {
+// Automatically resize the plugin to match the height of the content.
+// Use this in place of framer.showUI() inside a React component.
+export function useDynamicPluginHeight(
+	options: Omit<Partial<UIOptions>, "resizable"> & { resizable?: false | "width" } = {}
+) {
 	useEffect(() => {
 		const root = document.getElementById("root");
 		if (!root) return;
@@ -11,7 +15,16 @@ export function useDynamicPluginHeight({ maxHeight }: { maxHeight?: number } = {
 
 		const updateHeight = () => {
 			const height = contentElement.scrollHeight;
-			framer.showUI({ height: Math.min(height, maxHeight ?? Infinity) });
+			framer.showUI({
+				...options,
+				resizable:
+					options.resizable === true
+						? "width"
+						: options.resizable === "height"
+						? false
+						: options.resizable,
+				height: Math.max(options.minHeight ?? 0, Math.min(height, options.maxHeight ?? Infinity)),
+			});
 		};
 
 		// Initial height update
@@ -29,5 +42,5 @@ export function useDynamicPluginHeight({ maxHeight }: { maxHeight?: number } = {
 		return () => {
 			resizeObserver.disconnect();
 		};
-	}, []);
+	}, [options]);
 }

@@ -1,18 +1,17 @@
-import { framer } from "framer-plugin";
 import { useState } from "react";
 import "./App.css";
 import { useDynamicPluginHeight } from "./code/useDynamicPluginHeight";
 
-framer.showUI({
-	position: "top right",
-	width: 240,
-	height: 95,
-});
-
 export function App() {
 	const [count, setCount] = useState(2);
 
-	useDynamicPluginHeight({ maxHeight: 500 });
+	useDynamicPluginHeight({
+		position: "top right",
+		width: 240,
+		height: 400,
+		minHeight: 300,
+		maxHeight: 500,
+	});
 
 	return (
 		<main>
