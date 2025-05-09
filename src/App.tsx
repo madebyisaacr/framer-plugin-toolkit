@@ -1,7 +1,7 @@
-import { framer, CanvasNode } from "framer-plugin";
-import { useState, useEffect } from "react";
+import { framer } from "framer-plugin";
+import { useState } from "react";
 import "./App.css";
-import { useDynamicPluginHeight } from "./code/DynamicPluginHeight";
+import { useDynamicPluginHeight } from "./code/useDynamicPluginHeight";
 
 framer.showUI({
 	position: "top right",
